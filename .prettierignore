@@ -4,6 +4,8 @@ pnpm-lock.yaml
 yarn.lock
 bun.lock
 bun.lockb
+Dockerfile
+compose.yml
 
 # Miscellaneous
 /static/
