@@ -1,3 +1,24 @@
-<h1>Welcome to your library project</h1>
-<p>Create your package using @sveltejs/package and preview/showcase your work with SvelteKit</p>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import type { Card } from '@/lib/Card.js';
+  import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
+
+  let card: Card | null = null;
+
+  onMount(async () => {
+    card = await fetchRandomCardFromAPI('c:red');
+  });
+</script>
+
+{#if card !== null}
+  <ul>
+    <li style="margin-bottom: 1em;">
+      <strong>{card.name}</strong><br />
+      {#if card.image_uris}
+        <img src={card.image_uris.small} alt={card.name} width="240" />
+      {/if}
+    </li>
+  </ul>
+{:else}
+  <p>カードが見つかりません。</p>
+{/if}
