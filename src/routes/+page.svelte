@@ -47,6 +47,12 @@
     currentCard = result;
     saving = false;
   }
+
+  const reset = () => {
+    currentCard = null;
+    pastCards = [];
+    manaValue = null;
+  };
 </script>
 
 {#if errorMessage}
@@ -77,6 +83,8 @@
 <button on:click={getCard} disabled={saving}>
   {saving ? '取得中...' : 'カードを取得'}
 </button>
+
+<button on:click={reset}>リセット</button>
 
 <h2>過去のカード</h2>
 <ul>
