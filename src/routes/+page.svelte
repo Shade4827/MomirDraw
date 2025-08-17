@@ -58,22 +58,39 @@
 <div class="flex flex-col items-center">
   {#if currentCard}
     <div class="flex gap-4 mt-4">
-      <strong>{currentCard.cmc}</strong>
-      <strong>{currentCard.printed_name}</strong>
+      <strong class="text-2xl font-bold text-blue-700">{currentCard.cmc}:</strong>
+      <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printed_name}</strong>
+      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+        <button
+          class="flex items-center gap-1 px-2 py-1 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition"
+        >
+          詳細を見る
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h6m5-3h-3m3 0v3m0-3L10 14"
+            />
+          </svg>
+        </button>
+      </a>
     </div>
     {#if currentCard.image_uris}
       <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
         <img src={currentCard.image_uris.normal} alt={currentCard.name} />
       </a>
     {/if}
-    <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-      <button>詳細を見る</button>
-    </a>
   {:else}
-    <p>カードを取得してください</p>
+    <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
   {/if}
 
-  
   <input
     type="number"
     placeholder="マナ総量を入力..."
@@ -88,20 +105,20 @@
   </div>
 
   <div class="flex gap-4 mt-2">
-  <button
-    on:click={getCard}
-    disabled={saving}
-    class="px-4 py-2 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-  >
-    {saving ? '取得中...' : 'カードを取得'}
-  </button>
-  <button
-    on:click={reset}
-    class="px-4 py-2 rounded bg-gray-600 text-white font-bold shadow hover:bg-gray-700 transition"
-  >
-    リセット
-  </button>
-</div>
+    <button
+      on:click={getCard}
+      disabled={saving}
+      class="px-4 py-2 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+    >
+      {saving ? '取得中...' : 'カードを取得'}
+    </button>
+    <button
+      on:click={reset}
+      class="px-4 py-2 rounded bg-gray-600 text-white font-bold shadow hover:bg-gray-700 transition"
+    >
+      リセット
+    </button>
+  </div>
 </div>
 
 <h2>過去のカード</h2>
