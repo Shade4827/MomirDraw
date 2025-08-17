@@ -4,9 +4,15 @@
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
   let card: Card | null = null;
+  let manaValue: number | null = null;
+
+  let query = 'type:creature';
+  if (manaValue !== null) {
+    query += `+cmc:${manaValue}`;
+  }
 
   onMount(async () => {
-    card = await fetchRandomCardFromAPI('c:red');
+    card = await fetchRandomCardFromAPI(query);
   });
 </script>
 
@@ -22,3 +28,5 @@
 {:else}
   <p>カードが見つかりません。</p>
 {/if}
+
+<input type="text" placeholder="マナ総量を入力..." bind:value={manaValue} />
