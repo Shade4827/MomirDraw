@@ -124,17 +124,22 @@
   </div>
 </div>
 
-<h2>過去のカード</h2>
-<ul>
-  {#each pastCards as pastCard (pastCard.id)}
-    <li>
-      <strong>{pastCard.cmc}</strong>
-      <strong>{pastCard.printed_name}</strong><br />
-      <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+<div
+  class="fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 p-4 flex flex-col"
+>
+  <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
+  <ul class="space-y-4 overflow-y-auto flex-1">
+    {#each pastCards as pastCard (pastCard.id)}
+      <li>
+        <strong class="text-blue-700">{pastCard.cmc}:</strong>
+        <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printed_name}</strong>
+        <br />
         {#if pastCard.image_uris}
-          <img src={pastCard.image_uris.small} alt={pastCard.name} />
+          <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+            <img src={pastCard.image_uris.small} alt={pastCard.name} class="mx-auto" />
+          </a>
         {/if}
-      </a>
-    </li>
-  {/each}
-</ul>
+      </li>
+    {/each}
+  </ul>
+</div>
