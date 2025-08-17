@@ -5,6 +5,7 @@ export interface Card {
   multiverse_ids: number[];
   arena_id?: number;
   name: string;
+  printed_name?: string;
   lang: string;
   released_at: string;
   uri: string;
@@ -23,12 +24,15 @@ export interface Card {
   mana_cost?: string;
   cmc?: number;
   type_line: string;
+  printed_type_line?: string;
   oracle_text?: string;
+  printed_text?: string;
   power?: string;
   toughness?: string;
   colors?: string[];
   color_identity?: string[];
   keywords?: string[];
+  produced_mana?: string[];
   all_parts?: Array<{
     object: string;
     id: string;
@@ -60,6 +64,7 @@ export interface Card {
   collector_number?: string;
   digital?: boolean;
   rarity: string;
+  flavor_text?: string;
   card_back_id?: string;
   artist?: string;
   artist_ids?: string[];
@@ -71,7 +76,10 @@ export interface Card {
   textless?: boolean;
   booster?: boolean;
   story_spotlight?: boolean;
+  edhrec_rank?: number;
+  penny_rank?: number;
   promo_types?: string[];
   prices?: { [key: string]: string | null };
   related_uris?: { [key: string]: string };
+  purchase_uris?: { [key: string]: string };
 }

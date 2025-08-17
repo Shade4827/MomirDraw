@@ -2,11 +2,14 @@
   import type { Card } from '@/lib/Card.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  const BASE_QUERY: string = encodeURIComponent('type:creature');
+  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
+    .map(encodeURIComponent)
+    .join('+');
 
   let card: Card | null = null;
   let manaValue: number | null = null;
   let saving = false;
+  let errorMessage: string = '';
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
@@ -19,21 +22,32 @@
   async function getCard() {
     if (saving) return;
     saving = true;
-
+    errorMessage = '';
     try {
       const query = buildQuery();
-      card = await fetchRandomCardFromAPI(query);
+      const result = await fetchRandomCardFromAPI(query);
+      if (result) {
+        card = result;
+      } else {
+        errorMessage = 'カードが見つかりません';
+      }
+    } catch {
+      errorMessage = 'カード取得中にエラーが発生しました';
     } finally {
       saving = false;
     }
   }
 </script>
 
+{#if errorMessage}
+  <p style="color: red;">{errorMessage}</p>
+{/if}
+
 {#if card}
   <ul>
     <li style="margin-bottom: 1em;">
       <strong>{card.cmc}</strong>
-      <strong>{card.name}</strong><br />
+      <strong>{card.printed_name}</strong><br />
       <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
         {#if card.image_uris}
           <img src={card.image_uris.normal} alt={card.name} />
