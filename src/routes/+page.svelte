@@ -91,20 +91,13 @@
     <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
   {/if}
 
-  <input
-    type="number"
-    placeholder="マナ総量を入力..."
-    bind:value={manaValue}
-    class="px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
-  />
-
-  <div class="h-6 flex items-center justify-center">
-    {#if errorMessage}
-      <p class="text-red-500">{errorMessage}</p>
-    {/if}
-  </div>
-
   <div class="flex gap-4 mt-2">
+    <input
+      type="number"
+      placeholder="マナ総量を入力..."
+      bind:value={manaValue}
+      class="w-48 px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
+    />
     <button
       on:click={getCard}
       disabled={saving}
@@ -118,6 +111,12 @@
     >
       リセット
     </button>
+  </div>
+
+  <div class="h-6 flex items-center justify-center">
+    {#if errorMessage}
+      <p class="text-red-500">{errorMessage}</p>
+    {/if}
   </div>
 </div>
 
