@@ -1,16 +1,35 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import type { Card } from '@/lib/Card.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  let card: Card | null = null;
+  const BASE_QUERY: string = encodeURIComponent('type:creature');
 
-  onMount(async () => {
-    card = await fetchRandomCardFromAPI('c:red');
-  });
+  let card: Card | null = null;
+  let manaValue: number | null = null;
+  let saving = false;
+
+  const buildQuery = (): string => {
+    let query = BASE_QUERY;
+    if (manaValue) {
+      query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
+    }
+    return query;
+  };
+
+  async function getCard() {
+    if (saving) return;
+    saving = true;
+
+    try {
+      const query = buildQuery();
+      card = await fetchRandomCardFromAPI(query);
+    } finally {
+      saving = false;
+    }
+  }
 </script>
 
-{#if card !== null}
+{#if card}
   <ul>
     <li style="margin-bottom: 1em;">
       <strong>{card.name}</strong><br />
@@ -22,3 +41,9 @@
 {:else}
   <p>カードが見つかりません。</p>
 {/if}
+
+<input type="number" placeholder="マナ総量を入力..." bind:value={manaValue} />
+
+<button on:click={getCard} disabled={saving}>
+  {saving ? '取得中...' : 'カードを取得'}
+</button>
