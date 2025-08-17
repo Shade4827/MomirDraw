@@ -47,7 +47,7 @@
   <ul>
     <li style="margin-bottom: 1em;">
       <strong>{card.cmc}</strong>
-      <strong>{card.name}</strong><br />
+      <strong>{card.printed_name}</strong><br />
       <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
         {#if card.image_uris}
           <img src={card.image_uris.normal} alt={card.name} />
