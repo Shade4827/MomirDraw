@@ -73,7 +73,13 @@
     <p>カードが見つかりません。</p>
   {/if}
 
-  <input type="number" placeholder="マナ総量を入力..." bind:value={manaValue} />
+  
+  <input
+    type="number"
+    placeholder="マナ総量を入力..."
+    bind:value={manaValue}
+    class="px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
+  />
 
   <div class="h-6 flex items-center justify-center">
     {#if errorMessage}
@@ -82,11 +88,20 @@
   </div>
 
   <div class="flex gap-4 mt-2">
-    <button on:click={getCard} disabled={saving}>
-      {saving ? '取得中...' : 'カードを取得'}
-    </button>
-    <button on:click={reset}>リセット</button>
-  </div>
+  <button
+    on:click={getCard}
+    disabled={saving}
+    class="px-4 py-2 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+  >
+    {saving ? '取得中...' : 'カードを取得'}
+  </button>
+  <button
+    on:click={reset}
+    class="px-4 py-2 rounded bg-gray-600 text-white font-bold shadow hover:bg-gray-700 transition"
+  >
+    リセット
+  </button>
+</div>
 </div>
 
 <h2>過去のカード</h2>
