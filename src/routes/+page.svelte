@@ -9,6 +9,7 @@
   let card: Card | null = null;
   let manaValue: number | null = null;
   let saving = false;
+  let errorMessage: string = '';
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
@@ -21,15 +22,26 @@
   async function getCard() {
     if (saving) return;
     saving = true;
-
+    errorMessage = '';
     try {
       const query = buildQuery();
-      card = await fetchRandomCardFromAPI(query);
+      const result = await fetchRandomCardFromAPI(query);
+      if (result) {
+        card = result;
+      } else {
+        errorMessage = 'カードが見つかりません';
+      }
+    } catch {
+      errorMessage = 'カード取得中にエラーが発生しました';
     } finally {
       saving = false;
     }
   }
 </script>
+
+{#if errorMessage}
+  <p style="color: red;">{errorMessage}</p>
+{/if}
 
 {#if card}
   <ul>
