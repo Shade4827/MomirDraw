@@ -55,7 +55,11 @@
   };
 </script>
 
-<div class="flex flex-col items-center">
+<header class="fixed top-0 left-0 w-full py-3 bg-blue-400 z-50">
+  <h1 class="text-base font-bold text-white text-left pl-4 tracking-wide">mtg-momir-web（仮）</h1>
+</header>
+
+<div class="flex flex-col items-center mt-16">
   {#if currentCard}
     <div class="flex gap-4 mt-4">
       <strong class="text-2xl font-bold text-blue-700">{currentCard.cmc}:</strong>
