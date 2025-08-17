@@ -6,7 +6,8 @@
     .map(encodeURIComponent)
     .join('+');
 
-  let card: Card | null = null;
+  let currentCard: Card | null = null;
+  let pastCards: Card[] = [];
   let manaValue: number | null = null;
   let saving = false;
   let errorMessage: string = '';
@@ -23,19 +24,28 @@
     if (saving) return;
     saving = true;
     errorMessage = '';
+
+    const query = buildQuery();
+    let result: Card | null = null;
     try {
-      const query = buildQuery();
-      const result = await fetchRandomCardFromAPI(query);
-      if (result) {
-        card = result;
-      } else {
-        errorMessage = 'カードが見つかりません';
-      }
+      result = await fetchRandomCardFromAPI(query);
     } catch {
       errorMessage = 'カード取得中にエラーが発生しました';
-    } finally {
       saving = false;
+      return;
     }
+
+    if (!result) {
+      errorMessage = 'カードが見つかりません';
+      saving = false;
+      return;
+    }
+
+    if (currentCard) {
+      pastCards = [...pastCards, currentCard];
+    }
+    currentCard = result;
+    saving = false;
   }
 </script>
 
@@ -43,17 +53,17 @@
   <p style="color: red;">{errorMessage}</p>
 {/if}
 
-{#if card}
+{#if currentCard}
   <ul>
     <li style="margin-bottom: 1em;">
-      <strong>{card.cmc}</strong>
-      <strong>{card.printed_name}</strong><br />
-      <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        {#if card.image_uris}
-          <img src={card.image_uris.normal} alt={card.name} />
+      <strong>{currentCard.cmc}</strong>
+      <strong>{currentCard.printed_name}</strong><br />
+      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+        {#if currentCard.image_uris}
+          <img src={currentCard.image_uris.normal} alt={currentCard.name} />
         {/if}
       </a>
-      <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
+      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
         <button>詳細を見る</button>
       </a>
     </li>
@@ -67,3 +77,18 @@
 <button on:click={getCard} disabled={saving}>
   {saving ? '取得中...' : 'カードを取得'}
 </button>
+
+<h2>過去のカード</h2>
+<ul>
+  {#each pastCards as pastCard (pastCard.id)}
+    <li>
+      <strong>{pastCard.cmc}</strong>
+      <strong>{pastCard.printed_name}</strong><br />
+      <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+        {#if pastCard.image_uris}
+          <img src={pastCard.image_uris.small} alt={pastCard.name} />
+        {/if}
+      </a>
+    </li>
+  {/each}
+</ul>
