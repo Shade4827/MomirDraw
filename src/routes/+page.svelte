@@ -32,10 +32,16 @@
 {#if card}
   <ul>
     <li style="margin-bottom: 1em;">
+      <strong>{card.cmc}</strong>
       <strong>{card.name}</strong><br />
-      {#if card.image_uris}
-        <img src={card.image_uris.small} alt={card.name} width="240" />
-      {/if}
+      <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
+        {#if card.image_uris}
+          <img src={card.image_uris.normal} alt={card.name} />
+        {/if}
+      </a>
+      <a href={card.scryfall_uri} target="_blank" rel="noopener noreferrer">
+        <button>詳細を見る</button>
+      </a>
     </li>
   </ul>
 {:else}
