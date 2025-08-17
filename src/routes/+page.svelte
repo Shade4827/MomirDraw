@@ -2,7 +2,9 @@
   import type { Card } from '@/lib/Card.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  const BASE_QUERY: string = encodeURIComponent('type:creature');
+  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
+    .map(encodeURIComponent)
+    .join('+');
 
   let card: Card | null = null;
   let manaValue: number | null = null;
