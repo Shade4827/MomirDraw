@@ -55,36 +55,39 @@
   };
 </script>
 
-{#if errorMessage}
-  <p style="color: red;">{errorMessage}</p>
-{/if}
-
-{#if currentCard}
-  <ul>
-    <li style="margin-bottom: 1em;">
+<div class="flex flex-col items-center">
+  {#if currentCard}
+    <div class="flex gap-4 mt-4">
       <strong>{currentCard.cmc}</strong>
-      <strong>{currentCard.printed_name}</strong><br />
+      <strong>{currentCard.printed_name}</strong>
+    </div>
+    {#if currentCard.image_uris}
       <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        {#if currentCard.image_uris}
-          <img src={currentCard.image_uris.normal} alt={currentCard.name} />
-        {/if}
+        <img src={currentCard.image_uris.normal} alt={currentCard.name} />
       </a>
-      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        <button>詳細を見る</button>
-      </a>
-    </li>
-  </ul>
-{:else}
-  <p>カードが見つかりません。</p>
-{/if}
+    {/if}
+    <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+      <button>詳細を見る</button>
+    </a>
+  {:else}
+    <p>カードが見つかりません。</p>
+  {/if}
 
-<input type="number" placeholder="マナ総量を入力..." bind:value={manaValue} />
+  <input type="number" placeholder="マナ総量を入力..." bind:value={manaValue} />
 
-<button on:click={getCard} disabled={saving}>
-  {saving ? '取得中...' : 'カードを取得'}
-</button>
+  <div class="h-6 flex items-center justify-center">
+    {#if errorMessage}
+      <p class="text-red-500">{errorMessage}</p>
+    {/if}
+  </div>
 
-<button on:click={reset}>リセット</button>
+  <div class="flex gap-4 mt-2">
+    <button on:click={getCard} disabled={saving}>
+      {saving ? '取得中...' : 'カードを取得'}
+    </button>
+    <button on:click={reset}>リセット</button>
+  </div>
+</div>
 
 <h2>過去のカード</h2>
 <ul>
