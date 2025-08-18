@@ -48,7 +48,7 @@
 
     const displayCard = toDisplayCard(result);
     if (!displayCard) {
-      errorMessage = '表面がクリーチャーでないカードが出たため、再抽選してください。';
+      errorMessage = '表面がクリーチャーでないカードのため、再度お試しください。';
       saving = false;
       return;
     }
@@ -102,13 +102,15 @@
     <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
       <img src={currentCard.imageNormal} alt={currentCard.name} class="w-108 h-auto" />
     </a>
-  {:else if currentCard === null}
-    <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
   {:else}
-    <p class="text-lg font-semibold text-red-500 mt-8">
-      表面がクリーチャーでないカードが出たため、再抽選してください。
-    </p>
+    <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
   {/if}
+
+  <div class="min-h-6 flex items-center justify-center">
+    {#if errorMessage}
+      <p class="text-red-500">{errorMessage}</p>
+    {/if}
+  </div>
 
   <div class="flex gap-4 mt-2">
     <input
@@ -132,12 +134,6 @@
     >
       リセット
     </button>
-  </div>
-
-  <div class="h-6 flex items-center justify-center">
-    {#if errorMessage}
-      <p class="text-red-500">{errorMessage}</p>
-    {/if}
   </div>
 </div>
 
