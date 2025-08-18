@@ -52,6 +52,7 @@
     currentCard = null;
     pastCards = [];
     manaValue = null;
+    errorMessage = '';
   };
 </script>
 
