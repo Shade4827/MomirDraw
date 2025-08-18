@@ -9,12 +9,15 @@
   let currentCard: Card | null = null;
   let pastCards: Card[] = [];
   let manaValue: number | null = null;
+  $: isValidMana =
+    manaValue === null ||
+    (typeof manaValue === 'number' && Number.isInteger(manaValue) && manaValue >= 0);
   let saving = false;
   let errorMessage: string = '';
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
-    if (manaValue) {
+    if (isValidMana) {
       query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
     }
     return query;
@@ -99,13 +102,15 @@
   <div class="flex gap-4 mt-2">
     <input
       type="number"
+      min="0"
+      step="1"
       placeholder="マナ総量を入力..."
       bind:value={manaValue}
       class="w-48 px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
     />
     <button
       on:click={getCard}
-      disabled={saving}
+      disabled={saving || !isValidMana}
       class="px-4 py-2 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
     >
       {saving ? '取得中...' : 'カードを取得'}
