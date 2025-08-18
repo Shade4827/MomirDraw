@@ -1,4 +1,4 @@
-export interface Card {
+export interface ScryfallCardResponse {
   id: string;
   printed_name?: string;
   cmc?: number;
@@ -16,5 +16,7 @@ export interface Card {
       small?: string;
       normal?: string;
     };
+    type_line?: string;
   }>;
+  type_line?: string;
 }

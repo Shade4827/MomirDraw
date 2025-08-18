@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { Card } from '@/lib/Card.js';
+  import type { ScryfallCardResponse } from '@/lib/Card.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
+  import type { DisplayCard } from '@/lib/DisplayCard.js';
+  import { toDisplayCard } from '@/lib/DisplayCard.js';
 
   const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
     .map(encodeURIComponent)
     .join('+');
 
-  let currentCard: Card | null = null;
-  let pastCards: Card[] = [];
+  let currentCard: DisplayCard | null = null;
+  let pastCards: DisplayCard[] = [];
   let manaValue: number | null = null;
   $: isValidMana =
     manaValue === null ||
@@ -29,7 +31,7 @@
     errorMessage = '';
 
     const query = buildQuery();
-    let result: Card | null = null;
+    let result: ScryfallCardResponse | null = null;
     try {
       result = await fetchRandomCardFromAPI(query);
     } catch {
@@ -39,7 +41,14 @@
     }
 
     if (!result) {
-      errorMessage = 'カードが見つかりません';
+      errorMessage = 'カードが見つかりませんでした。再度お試しください。';
+      saving = false;
+      return;
+    }
+
+    const displayCard = toDisplayCard(result);
+    if (!displayCard) {
+      errorMessage = '表面がクリーチャーでないカードが出たため、再抽選してください。';
       saving = false;
       return;
     }
@@ -47,7 +56,7 @@
     if (currentCard) {
       pastCards = [currentCard, ...pastCards];
     }
-    currentCard = result;
+    currentCard = displayCard;
     saving = false;
   }
 
@@ -67,8 +76,8 @@
   {#if currentCard}
     <div class="flex gap-4 mt-4">
       <strong class="text-2xl font-bold text-blue-700">{currentCard.cmc}:</strong>
-      <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printed_name}</strong>
-      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+      <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printedName}</strong>
+      <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
         <button
           class="flex items-center gap-1 px-2 py-1 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition"
         >
@@ -90,13 +99,15 @@
         </button>
       </a>
     </div>
-    {#if currentCard.image_uris}
-      <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        <img src={currentCard.image_uris.normal} alt={currentCard.name} class="w-108 h-auto" />
-      </a>
-    {/if}
-  {:else}
+    <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+      <img src={currentCard.imageNormal} alt={currentCard.name} class="w-108 h-auto" />
+    </a>
+  {:else if currentCard === null}
     <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
+  {:else}
+    <p class="text-lg font-semibold text-red-500 mt-8">
+      表面がクリーチャーでないカードが出たため、再抽選してください。
+    </p>
   {/if}
 
   <div class="flex gap-4 mt-2">
@@ -137,12 +148,10 @@
   <ul class="space-y-4 overflow-y-auto flex-1">
     {#each pastCards as pastCard (pastCard.id)}
       <li>
-        <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printed_name}</strong>
-        {#if pastCard.image_uris}
-          <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-            <img src={pastCard.image_uris.small} alt={pastCard.name} class="mx-auto w-28 h-auto" />
-          </a>
-        {/if}
+        <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printedName}</strong>
+        <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+          <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
+        </a>
       </li>
     {/each}
   </ul>
