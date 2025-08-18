@@ -88,7 +88,7 @@
     </div>
     {#if currentCard.image_uris}
       <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        <img src={currentCard.image_uris.normal} alt={currentCard.name} />
+        <img src={currentCard.image_uris.normal} alt={currentCard.name} class="w-108 h-auto" />
       </a>
     {/if}
   {:else}
@@ -131,12 +131,10 @@
   <ul class="space-y-4 overflow-y-auto flex-1">
     {#each pastCards as pastCard (pastCard.id)}
       <li>
-        <strong class="text-blue-700">{pastCard.cmc}:</strong>
         <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printed_name}</strong>
-        <br />
         {#if pastCard.image_uris}
           <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-            <img src={pastCard.image_uris.small} alt={pastCard.name} class="mx-auto" />
+            <img src={pastCard.image_uris.small} alt={pastCard.name} class="mx-auto w-28 h-auto" />
           </a>
         {/if}
       </li>
