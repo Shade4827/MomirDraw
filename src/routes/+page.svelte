@@ -42,7 +42,7 @@
     }
 
     if (currentCard) {
-      pastCards = [...pastCards, currentCard];
+      pastCards = [currentCard, ...pastCards];
     }
     currentCard = result;
     saving = false;
@@ -55,48 +55,89 @@
   };
 </script>
 
-{#if errorMessage}
-  <p style="color: red;">{errorMessage}</p>
-{/if}
+<header class="fixed top-0 left-0 w-full py-3 bg-blue-400 z-50">
+  <h1 class="text-base font-bold text-white text-left pl-4 tracking-wide">mtg-momir-web（仮）</h1>
+</header>
 
-{#if currentCard}
-  <ul>
-    <li style="margin-bottom: 1em;">
-      <strong>{currentCard.cmc}</strong>
-      <strong>{currentCard.printed_name}</strong><br />
+<div class="flex flex-col items-center mt-16">
+  {#if currentCard}
+    <div class="flex gap-4 mt-4">
+      <strong class="text-2xl font-bold text-blue-700">{currentCard.cmc}:</strong>
+      <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printed_name}</strong>
       <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        {#if currentCard.image_uris}
-          <img src={currentCard.image_uris.normal} alt={currentCard.name} />
-        {/if}
+        <button
+          class="flex items-center gap-1 px-2 py-1 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition"
+        >
+          詳細を見る
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h6m5-3h-3m3 0v3m0-3L10 14"
+            />
+          </svg>
+        </button>
       </a>
+    </div>
+    {#if currentCard.image_uris}
       <a href={currentCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
-        <button>詳細を見る</button>
+        <img src={currentCard.image_uris.normal} alt={currentCard.name} class="w-108 h-auto" />
       </a>
-    </li>
-  </ul>
-{:else}
-  <p>カードが見つかりません。</p>
-{/if}
+    {/if}
+  {:else}
+    <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
+  {/if}
 
-<input type="number" placeholder="マナ総量を入力..." bind:value={manaValue} />
+  <div class="flex gap-4 mt-2">
+    <input
+      type="number"
+      placeholder="マナ総量を入力..."
+      bind:value={manaValue}
+      class="w-48 px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
+    />
+    <button
+      on:click={getCard}
+      disabled={saving}
+      class="px-4 py-2 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+    >
+      {saving ? '取得中...' : 'カードを取得'}
+    </button>
+    <button
+      on:click={reset}
+      class="px-4 py-2 rounded bg-gray-600 text-white font-bold shadow hover:bg-gray-700 transition"
+    >
+      リセット
+    </button>
+  </div>
 
-<button on:click={getCard} disabled={saving}>
-  {saving ? '取得中...' : 'カードを取得'}
-</button>
+  <div class="h-6 flex items-center justify-center">
+    {#if errorMessage}
+      <p class="text-red-500">{errorMessage}</p>
+    {/if}
+  </div>
+</div>
 
-<button on:click={reset}>リセット</button>
-
-<h2>過去のカード</h2>
-<ul>
-  {#each pastCards as pastCard (pastCard.id)}
-    <li>
-      <strong>{pastCard.cmc}</strong>
-      <strong>{pastCard.printed_name}</strong><br />
-      <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+<div
+  class="fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 p-4 flex flex-col"
+>
+  <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
+  <ul class="space-y-4 overflow-y-auto flex-1">
+    {#each pastCards as pastCard (pastCard.id)}
+      <li>
+        <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printed_name}</strong>
         {#if pastCard.image_uris}
-          <img src={pastCard.image_uris.small} alt={pastCard.name} />
+          <a href={pastCard.scryfall_uri} target="_blank" rel="noopener noreferrer">
+            <img src={pastCard.image_uris.small} alt={pastCard.name} class="mx-auto w-28 h-auto" />
+          </a>
         {/if}
-      </a>
-    </li>
-  {/each}
-</ul>
+      </li>
+    {/each}
+  </ul>
+</div>
