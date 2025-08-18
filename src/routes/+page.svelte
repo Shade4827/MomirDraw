@@ -42,7 +42,7 @@
     }
 
     if (currentCard) {
-      pastCards = [...pastCards, currentCard];
+      pastCards = [currentCard, ...pastCards];
     }
     currentCard = result;
     saving = false;
