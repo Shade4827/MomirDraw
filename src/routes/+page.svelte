@@ -81,7 +81,6 @@
 <div class="flex flex-col items-center mt-16">
   {#if currentCard}
     <div class="flex gap-4 mt-4">
-      <strong class="text-2xl font-bold text-blue-700">{currentCard.cmc}:</strong>
       <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printedName}</strong>
       <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
         <button
