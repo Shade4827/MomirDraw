@@ -152,7 +152,7 @@
 
 <!-- PC: 右側サイドバー（常時表示） -->
 <div
-  class="hidden sm:flex fixed top-20 right-0 w-64 md:w-80 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
+  class="hidden lg:flex fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
 >
   <div class="p-4 flex flex-col h-full">
     <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
@@ -169,8 +169,8 @@
   </div>
 </div>
 
-<!-- モバイル: 右側サイドバー（開閉可能・アイコンのみ/展開時は現状幅） -->
-<div class="sm:hidden z-40">
+<!-- モバイル・タブレット: 右側サイドバー（開閉可能・アイコンのみ/展開時は現状幅） -->
+<div class="xl:hidden z-40">
   {#if !sidebarOpen}
     <button
       class="fixed bottom-4 right-4 w-14 h-14 bg-blue-500 text-white flex items-center justify-center rounded-full shadow-lg border-2 border-blue-600"
