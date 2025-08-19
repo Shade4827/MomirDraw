@@ -1,8 +1,8 @@
-import type { Card } from '@/lib/Card.js';
+import type { ScryfallCardResponse } from '@/lib/Card.js';
 
 const API_URL = 'https://api.scryfall.com';
 
-export async function fetchRandomCardFromAPI(query: string): Promise<Card | null> {
+export async function fetchRandomCardFromAPI(query: string): Promise<ScryfallCardResponse | null> {
   try {
     const res = await fetch(`${API_URL}/cards/random?q=${query}`);
     if (!res.ok) throw new Error('API response not ok');
