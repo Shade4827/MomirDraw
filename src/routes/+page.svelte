@@ -106,7 +106,11 @@
       </a>
     </div>
     <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-      <img src={currentCard.imageNormal} alt={currentCard.name} class="w-108 h-auto" />
+      <img
+        src={currentCard.imageNormal}
+        alt={currentCard.name}
+        class={`w-108 h-auto${errorMessage ? ' opacity-50' : ''}`}
+      />
     </a>
   {:else}
     <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
