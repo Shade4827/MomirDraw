@@ -16,6 +16,7 @@
     (typeof manaValue === 'number' && Number.isInteger(manaValue) && manaValue >= 0);
   let saving = false;
   let errorMessage: string = '';
+  let sidebarOpen = false;
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
@@ -78,9 +79,9 @@
   <h1 class="text-base font-bold text-white text-left pl-4 tracking-wide">mtg-momir-web（仮）</h1>
 </header>
 
-<div class="flex flex-col items-center mt-16">
+<div class="flex flex-col items-center mt-16 px-2 sm:px-4">
   {#if currentCard}
-    <div class="flex gap-4 mt-4">
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 mb-4 items-center w-full sm:w-auto">
       <strong class="text-2xl font-extrabold text-gray-900">{currentCard.printedName}</strong>
       <a href={currentCard.scryfallUri} target="_blank" rel="noopener noreferrer">
         <button
@@ -108,27 +109,27 @@
       <img
         src={currentCard.imageNormal}
         alt={currentCard.name}
-        class={`w-108 h-auto${errorMessage ? ' opacity-50' : ''}`}
+        class={`w-96 max-w-xs sm:max-w-md md:max-w-lg h-auto${errorMessage ? ' opacity-50' : ''}`}
       />
     </a>
   {:else}
     <p class="text-lg font-semibold text-gray-500 mt-8">カードを取得してください</p>
   {/if}
 
-  <div class="min-h-6 flex items-center justify-center">
+  <div class="min-h-12 flex items-center justify-center">
     {#if errorMessage}
       <p class="text-red-500">{errorMessage}</p>
     {/if}
   </div>
 
-  <div class="flex gap-4 mt-2">
+  <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-2 w-full sm:w-auto">
     <input
       type="number"
       min="0"
       step="1"
       placeholder="マナ総量を入力..."
       bind:value={manaValue}
-      class="w-48 px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
+      class="w-full sm:w-48 px-4 py-2 rounded border-2 border-blue-300 focus:outline-none focus:border-blue-500 shadow transition"
     />
     <button
       on:click={getCard}
@@ -146,18 +147,83 @@
   </div>
 </div>
 
+<!-- PC: 右側サイドバー（常時表示） -->
 <div
-  class="fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 p-4 flex flex-col"
+  class="hidden sm:flex fixed top-20 right-0 w-64 md:w-80 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
 >
-  <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
-  <ul class="space-y-4 overflow-y-auto flex-1">
-    {#each pastCards as pastCard (pastCard.id)}
-      <li>
-        <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printedName}</strong>
-        <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-          <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
-        </a>
-      </li>
-    {/each}
-  </ul>
+  <div class="p-4 flex flex-col h-full">
+    <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
+    <ul class="space-y-4 overflow-y-auto flex-1">
+      {#each pastCards as pastCard (pastCard.id)}
+        <li>
+          <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printedName}</strong>
+          <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+            <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</div>
+
+<!-- モバイル: 右側サイドバー（開閉可能・アイコンのみ/展開時は現状幅） -->
+<div class="sm:hidden z-40">
+  {#if !sidebarOpen}
+    <button
+      class="fixed bottom-4 right-4 w-14 h-14 bg-blue-500 text-white flex items-center justify-center rounded-full shadow-lg border-2 border-blue-600"
+      on:click={() => (sidebarOpen = true)}
+      aria-label="抽選済みカードを開く"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-8 h-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  {:else}
+    <div
+      class="fixed top-20 right-0 w-80 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex flex-col"
+    >
+      <button
+        class="w-12 h-full absolute top-0 left-0 bg-blue-500 text-white flex items-center justify-center border-l border-blue-600 rounded-l-lg shadow-lg"
+        on:click={() => (sidebarOpen = false)}
+        aria-label="抽選済みカードを閉じる"
+        style="z-index:1;"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-8 h-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      <div class="p-4 flex flex-col h-full ml-12">
+        <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
+        <ul class="space-y-4 overflow-y-auto flex-1">
+          {#each pastCards as pastCard (pastCard.id)}
+            <li>
+              <strong class="text-gray-900 truncate block max-w-[13rem]"
+                >{pastCard.printedName}</strong
+              >
+              <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+                <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-36 h-auto" />
+              </a>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    </div>
+  {/if}
 </div>
