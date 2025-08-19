@@ -53,6 +53,12 @@
       return;
     }
 
+    if (pastCards.some(card => card.id === displayCard.id)) {
+      errorMessage = '同じカードが既に抽選されています。再度お試しください。';
+      saving = false;
+      return;
+    }
+
     if (currentCard) {
       pastCards = [currentCard, ...pastCards];
     }
