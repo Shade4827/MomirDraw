@@ -112,7 +112,7 @@
       <img
         src={currentCard.imageNormal}
         alt={currentCard.name}
-        class={`w-96 max-w-xs sm:max-w-md md:max-w-lg h-auto${errorMessage ? ' opacity-50' : ''}`}
+        class="w-96 max-w-xs sm:max-w-md md:max-w-lg h-auto"
       />
     </a>
   {:else}
