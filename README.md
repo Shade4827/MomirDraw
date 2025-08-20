@@ -27,3 +27,6 @@ mtg-momir-web is unofficial Fan Content permitted under the Fan Content Policy. 
 mtg-momir-webはファンコンテンツ・ポリシーに沿った非公式のファンコンテンツです。ウィザーズ社の認可/許諾は得ていません。題材の一部に、ウィザーズ・オブ・ザ・コースト社の財産を含んでいます。©Wizards of the Coast LLC.
 
 https://company.wizards.com/ja/legal/fancontentpolicy
+
+## License
+[MIT License](https://choosealicense.com/licenses/mit/)
