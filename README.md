@@ -1,5 +1,7 @@
 # MomirDraw
 
+<p align="center"><img alt="MomirDraw" src="https://raw.githubusercontent.com/Shade4827/mtg-momir-web/main/static/favicon_256.ico"/></p>
+
 マジック：ザ・ギャザリングの対戦フォーマットの1つであるモミール・ベーシックのためのカード抽選Webアプリケーションです。
 
 ## 使い方
