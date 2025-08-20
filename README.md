@@ -1,58 +1,29 @@
-# Svelte library
+# mtg-momir-web
+マジック：ザ・ギャザリングの対戦フォーマットの1つであるモミール・ベーシックのためのカード抽選Webアプリケーションです。
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+## 使い方
+1. <write url> にアクセスします
+2. マナ総量を入力します
+3. 「カードを取得」を押すとカード名と画像が表示されます
+4. 再度「カードを取得」を押すと表示されていたカードが抽選済みに移動し、新たなカードが表示されます
+5. 「リセット」を押すと今まで出たカードが全てリセットされます
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+### 注意点
+- マナ総量を入力せずカードを取得した場合、全てのマナ総量の中から抽選されます
+- 同じカードは複数回表示されません。同じカードが抽選された場合には再抽選をしてください
+- 表面がクリーチャーであるカードのみ抽選されます
 
-## Creating a project
+## APIの利用
+mtg-momir-webはScryfall APIを利用しています。
+https://scryfall.com/docs/api
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Author
+- https://github.com/Shade4827
+- X: [@shade4827](https://x.com/shade4827)
 
-```bash
-# create a new project in the current directory
-npx sv create
+## ファンコンテンツ・ポリシー
+mtg-momir-web is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
 
-# create a new project in my-app
-npx sv create my-app
-```
+mtg-momir-webはファンコンテンツ・ポリシーに沿った非公式のファンコンテンツです。ウィザーズ社の認可/許諾は得ていません。題材の一部に、ウィザーズ・オブ・ザ・コースト社の財産を含んでいます。©Wizards of the Coast LLC.
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-## Building
-
-To build your library:
-
-```bash
-npm run package
-```
-
-To create a production version of your showcase app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
-```
+https://company.wizards.com/ja/legal/fancontentpolicy
