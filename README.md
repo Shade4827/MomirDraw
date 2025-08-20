@@ -1,4 +1,6 @@
-# mtg-momir-web
+# MomirDraw
+
+<p align="center"><img alt="MomirDraw" src="https://raw.githubusercontent.com/Shade4827/mtg-momir-web/main/static/favicon_256.ico"/></p>
 
 マジック：ザ・ギャザリングの対戦フォーマットの1つであるモミール・ベーシックのためのカード抽選Webアプリケーションです。
 
@@ -18,7 +20,7 @@
 
 ## APIの利用
 
-mtg-momir-webはScryfall APIを利用しています。
+MomirDrawはScryfall APIを利用しています。
 https://scryfall.com/docs/api
 
 ## Author
@@ -28,9 +30,9 @@ https://scryfall.com/docs/api
 
 ## ファンコンテンツ・ポリシー
 
-mtg-momir-web is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+MomirDraw is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
 
-mtg-momir-webはファンコンテンツ・ポリシーに沿った非公式のファンコンテンツです。ウィザーズ社の認可/許諾は得ていません。題材の一部に、ウィザーズ・オブ・ザ・コースト社の財産を含んでいます。©Wizards of the Coast LLC.
+MomirDrawはファンコンテンツ・ポリシーに沿った非公式のファンコンテンツです。ウィザーズ社の認可/許諾は得ていません。題材の一部に、ウィザーズ・オブ・ザ・コースト社の財産を含んでいます。©Wizards of the Coast LLC.
 
 https://company.wizards.com/ja/legal/fancontentpolicy
 
