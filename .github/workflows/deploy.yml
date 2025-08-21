@@ -1,4 +1,4 @@
-name: Deploy Svelte App to GitHub Pages
+name: Deploy SvelteKit App to GitHub Pages
 
 on:
   push:
@@ -31,7 +31,9 @@ jobs:
         run: yarn install
 
       - name: Build project
-        run: yarn run build
+        run: |
+          export GITHUB_PAGES=true
+          yarn run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -39,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./build
 
       - name: Deploy to GitHub Pages
         id: deployment
