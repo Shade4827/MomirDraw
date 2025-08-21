@@ -79,7 +79,17 @@
 </script>
 
 <header class="fixed top-0 left-0 w-full py-3 bg-blue-400 z-50">
-  <h1 class="text-base font-bold text-white text-left pl-4 tracking-wide">MomirDraw</h1>
+  <div class="flex items-center justify-between w-full">
+    <h1 class="text-base font-bold text-white text-left pl-4 tracking-wide">MomirDraw</h1>
+    <div class="flex items-center space-x-2 pr-4">
+      <p class="text-sm text-white">Created by</p>
+      <a
+        href="https://x.com/shade4827"
+        target="_blank"
+        class="text-sm text-white font-bold hover:underline">@shade4827</a
+      >
+    </div>
+  </div>
 </header>
 
 <div class="flex flex-col items-center mt-16 px-2 sm:px-4">
