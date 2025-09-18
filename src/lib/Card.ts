@@ -1,6 +1,7 @@
 export interface ScryfallCardResponse {
   id: string;
   printed_name?: string;
+  mana_cost?: string;
   cmc?: number;
   image_uris?: {
     normal?: string;

@@ -47,6 +47,12 @@
       return;
     }
 
+    if (!result.mana_cost) {
+      errorMessage = '合体カードのため、再度お試しください。';
+      saving = false;
+      return;
+    }
+
     const displayCard = toDisplayCard(result);
     if (!displayCard) {
       errorMessage = '表面がクリーチャーでないカードのため、再度お試しください。';
