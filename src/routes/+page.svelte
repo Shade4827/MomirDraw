@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { ScryfallCardResponse } from '@/lib/Card.js';
-  import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
   import type { DisplayCard } from '@/lib/DisplayCard.js';
+  import type { SearchOptionKey, SearchOptions } from '@/lib/SearchOption.js';
   import { toDisplayCard } from '@/lib/DisplayCard.js';
+  import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
   const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
     .map(encodeURIComponent)
@@ -17,7 +18,20 @@
   let saving = false;
   let errorMessage: string = '';
   let sidebarOpen = false;
-  let excludeMeldCard = true;
+
+  let searchOptions: SearchOptions = {
+    excludeMeldCard: { value: true, label: '合体カードを除外する' },
+    includeCommon: { value: false, label: 'コモンから検索' },
+    includeUncommon: { value: false, label: 'アンコモンから検索' },
+    includeRare: { value: false, label: 'レアから検索' },
+    includeMythic: { value: false, label: '神話レアから検索' }
+  };
+
+  $: optionList = Object.entries(searchOptions).map(([key, option]) => ({ key, ...option }));
+
+  function toggleOption(key: SearchOptionKey) {
+    searchOptions[key].value = !searchOptions[key].value;
+  }
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
@@ -48,7 +62,7 @@
       return;
     }
 
-    if (excludeMeldCard && !result.mana_cost) {
+    if (searchOptions.excludeMeldCard.value && !result.mana_cost) {
       errorMessage = '合体カードのため、再度お試しください。';
       saving = false;
       return;
@@ -173,11 +187,17 @@
 >
   <div class="p-4 flex flex-col h-full">
     <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
-    <div class="mb-4">
-      <label class="flex items-center gap-2">
-        <input type="checkbox" bind:checked={excludeMeldCard} />
-        <span class="text-sm">合体カードを除外する</span>
-      </label>
+    <div class="mb-4 flex flex-col gap-1">
+      {#each optionList as opt (Object.keys(opt))}
+        <label class="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={opt.value}
+            on:change={() => toggleOption(opt.key as SearchOptionKey)}
+          />
+          <span class="text-sm">{opt.label}</span>
+        </label>
+      {/each}
     </div>
     <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
     <ul class="space-y-4 overflow-y-auto flex-1">
@@ -238,11 +258,17 @@
       </button>
       <div class="p-4 flex flex-col h-full ml-12">
         <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
-        <div class="mb-4">
-          <label class="flex items-center gap-2">
-            <input type="checkbox" bind:checked={excludeMeldCard} />
-            <span class="text-sm">合体カードを除外する</span>
-          </label>
+        <div class="mb-4 flex flex-col gap-1">
+          {#each optionList as opt (Object.keys(opt))}
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={opt.value}
+                on:change={() => toggleOption(opt.key as SearchOptionKey)}
+              />
+              <span class="text-sm">{opt.label}</span>
+            </label>
+          {/each}
         </div>
         <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
         <ul class="space-y-4 overflow-y-auto flex-1">
