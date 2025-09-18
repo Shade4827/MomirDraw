@@ -35,9 +35,25 @@
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
+
     if (isValidMana) {
       query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
     }
+
+    const rarityConditions = [
+      searchOptions.includeCommon.value && 'rarity:c',
+      searchOptions.includeUncommon.value && 'rarity:u',
+      searchOptions.includeRare.value && 'rarity:r',
+      searchOptions.includeMythic.value && 'rarity:m'
+    ]
+      .filter(Boolean)
+      .map(encodeURIComponent);
+    if (rarityConditions.length > 0) {
+      const open = encodeURIComponent('(');
+      const close = encodeURIComponent(')');
+      query += `+${open}${rarityConditions.join('+OR+')}${close}`;
+    }
+
     return query;
   };
 
