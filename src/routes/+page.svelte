@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { ScryfallCardResponse } from '@/lib/Card.js';
-  import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
   import type { DisplayCard } from '@/lib/DisplayCard.js';
+  import type { SearchOptionKey, SearchOptions } from '@/lib/SearchOption.js';
   import { toDisplayCard } from '@/lib/DisplayCard.js';
+  import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
   const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
     .map(encodeURIComponent)
@@ -17,12 +18,44 @@
   let saving = false;
   let errorMessage: string = '';
   let sidebarOpen = false;
+  let optionSectionOpen = true;
+  let historySectionOpen = true;
+
+  let searchOptions: SearchOptions = {
+    excludeMeldCard: { value: true, label: '合体カードを除外する' },
+    includeCommon: { value: false, label: 'コモンから検索' },
+    includeUncommon: { value: false, label: 'アンコモンから検索' },
+    includeRare: { value: false, label: 'レアから検索' },
+    includeMythic: { value: false, label: '神話レアから検索' }
+  };
+
+  $: optionList = Object.entries(searchOptions).map(([key, option]) => ({ key, ...option }));
+
+  function toggleOption(key: SearchOptionKey) {
+    searchOptions[key].value = !searchOptions[key].value;
+  }
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
+
     if (isValidMana) {
       query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
     }
+
+    const rarityConditions = [
+      searchOptions.includeCommon.value && 'rarity:c',
+      searchOptions.includeUncommon.value && 'rarity:u',
+      searchOptions.includeRare.value && 'rarity:r',
+      searchOptions.includeMythic.value && 'rarity:m'
+    ]
+      .filter(Boolean)
+      .map(encodeURIComponent);
+    if (rarityConditions.length > 0) {
+      const open = encodeURIComponent('(');
+      const close = encodeURIComponent(')');
+      query += `+${open}${rarityConditions.join('+OR+')}${close}`;
+    }
+
     return query;
   };
 
@@ -47,7 +80,7 @@
       return;
     }
 
-    if (!result.mana_cost) {
+    if (searchOptions.excludeMeldCard.value && !result.mana_cost) {
       errorMessage = '合体カードのため、再度お試しください。';
       saving = false;
       return;
@@ -171,17 +204,54 @@
   class="hidden lg:flex fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
 >
   <div class="p-4 flex flex-col h-full">
-    <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
-    <ul class="space-y-4 overflow-y-auto flex-1">
-      {#each pastCards as pastCard (pastCard.id)}
-        <li>
-          <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printedName}</strong>
-          <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-            <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
-          </a>
-        </li>
-      {/each}
-    </ul>
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-bold flex-shrink-0">オプション</h2>
+      <button
+        class="text-blue-600 text-xl focus:outline-none"
+        on:click={() => (optionSectionOpen = !optionSectionOpen)}
+        aria-label="オプション折りたたみ"
+      >
+        {optionSectionOpen ? '−' : '+'}
+      </button>
+    </div>
+    {#if optionSectionOpen}
+      <div class="mb-4 flex flex-col gap-1">
+        {#each optionList as opt (Object.keys(opt))}
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={opt.value}
+              on:change={() => toggleOption(opt.key as SearchOptionKey)}
+            />
+            <span class="text-sm">{opt.label}</span>
+          </label>
+        {/each}
+      </div>
+    {/if}
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-bold flex-shrink-0">抽選済み</h2>
+      <button
+        class="text-blue-600 text-xl focus:outline-none"
+        on:click={() => (historySectionOpen = !historySectionOpen)}
+        aria-label="抽選済み折りたたみ"
+      >
+        {historySectionOpen ? '−' : '+'}
+      </button>
+    </div>
+    {#if historySectionOpen}
+      <ul class="space-y-4 overflow-y-auto flex-1">
+        {#each pastCards as pastCard (pastCard.id)}
+          <li>
+            <strong class="text-gray-900 truncate block max-w-[13rem]"
+              >{pastCard.printedName}</strong
+            >
+            <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+              <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
+            </a>
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </div>
 
@@ -229,19 +299,54 @@
         </svg>
       </button>
       <div class="p-4 flex flex-col h-full ml-12">
-        <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
-        <ul class="space-y-4 overflow-y-auto flex-1">
-          {#each pastCards as pastCard (pastCard.id)}
-            <li>
-              <strong class="text-gray-900 truncate block max-w-[13rem]"
-                >{pastCard.printedName}</strong
-              >
-              <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-                <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-36 h-auto" />
-              </a>
-            </li>
-          {/each}
-        </ul>
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-bold flex-shrink-0">オプション</h2>
+          <button
+            class="text-blue-600 text-xl focus:outline-none"
+            on:click={() => (optionSectionOpen = !optionSectionOpen)}
+            aria-label="オプション折りたたみ"
+          >
+            {optionSectionOpen ? '−' : '+'}
+          </button>
+        </div>
+        {#if optionSectionOpen}
+          <div class="mb-4 flex flex-col gap-1">
+            {#each optionList as opt (Object.keys(opt))}
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={opt.value}
+                  on:change={() => toggleOption(opt.key as SearchOptionKey)}
+                />
+                <span class="text-sm">{opt.label}</span>
+              </label>
+            {/each}
+          </div>
+        {/if}
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-bold flex-shrink-0">抽選済み</h2>
+          <button
+            class="text-blue-600 text-xl focus:outline-none"
+            on:click={() => (historySectionOpen = !historySectionOpen)}
+            aria-label="抽選済み折りたたみ"
+          >
+            {historySectionOpen ? '−' : '+'}
+          </button>
+        </div>
+        {#if historySectionOpen}
+          <ul class="space-y-4 overflow-y-auto flex-1">
+            {#each pastCards as pastCard (pastCard.id)}
+              <li>
+                <strong class="text-gray-900 truncate block max-w-[13rem]"
+                  >{pastCard.printedName}</strong
+                >
+                <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+                  <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-36 h-auto" />
+                </a>
+              </li>
+            {/each}
+          </ul>
+        {/if}
       </div>
     </div>
   {/if}
