@@ -18,6 +18,8 @@
   let saving = false;
   let errorMessage: string = '';
   let sidebarOpen = false;
+  let optionSectionOpen = true;
+  let historySectionOpen = true;
 
   let searchOptions: SearchOptions = {
     excludeMeldCard: { value: true, label: '合体カードを除外する' },
@@ -202,30 +204,54 @@
   class="hidden lg:flex fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
 >
   <div class="p-4 flex flex-col h-full">
-    <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
-    <div class="mb-4 flex flex-col gap-1">
-      {#each optionList as opt (Object.keys(opt))}
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={opt.value}
-            on:change={() => toggleOption(opt.key as SearchOptionKey)}
-          />
-          <span class="text-sm">{opt.label}</span>
-        </label>
-      {/each}
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-bold flex-shrink-0">オプション</h2>
+      <button
+        class="text-blue-600 text-xl focus:outline-none"
+        on:click={() => (optionSectionOpen = !optionSectionOpen)}
+        aria-label="オプション折りたたみ"
+      >
+        {optionSectionOpen ? '−' : '+'}
+      </button>
     </div>
-    <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
-    <ul class="space-y-4 overflow-y-auto flex-1">
-      {#each pastCards as pastCard (pastCard.id)}
-        <li>
-          <strong class="text-gray-900 truncate block max-w-[13rem]">{pastCard.printedName}</strong>
-          <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-            <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
-          </a>
-        </li>
-      {/each}
-    </ul>
+    {#if optionSectionOpen}
+      <div class="mb-4 flex flex-col gap-1">
+        {#each optionList as opt (Object.keys(opt))}
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={opt.value}
+              on:change={() => toggleOption(opt.key as SearchOptionKey)}
+            />
+            <span class="text-sm">{opt.label}</span>
+          </label>
+        {/each}
+      </div>
+    {/if}
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-bold flex-shrink-0">抽選済み</h2>
+      <button
+        class="text-blue-600 text-xl focus:outline-none"
+        on:click={() => (historySectionOpen = !historySectionOpen)}
+        aria-label="抽選済み折りたたみ"
+      >
+        {historySectionOpen ? '−' : '+'}
+      </button>
+    </div>
+    {#if historySectionOpen}
+      <ul class="space-y-4 overflow-y-auto flex-1">
+        {#each pastCards as pastCard (pastCard.id)}
+          <li>
+            <strong class="text-gray-900 truncate block max-w-[13rem]"
+              >{pastCard.printedName}</strong
+            >
+            <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+              <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-28 h-auto" />
+            </a>
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </div>
 
@@ -273,32 +299,54 @@
         </svg>
       </button>
       <div class="p-4 flex flex-col h-full ml-12">
-        <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
-        <div class="mb-4 flex flex-col gap-1">
-          {#each optionList as opt (Object.keys(opt))}
-            <label class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={opt.value}
-                on:change={() => toggleOption(opt.key as SearchOptionKey)}
-              />
-              <span class="text-sm">{opt.label}</span>
-            </label>
-          {/each}
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-bold flex-shrink-0">オプション</h2>
+          <button
+            class="text-blue-600 text-xl focus:outline-none"
+            on:click={() => (optionSectionOpen = !optionSectionOpen)}
+            aria-label="オプション折りたたみ"
+          >
+            {optionSectionOpen ? '−' : '+'}
+          </button>
         </div>
-        <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
-        <ul class="space-y-4 overflow-y-auto flex-1">
-          {#each pastCards as pastCard (pastCard.id)}
-            <li>
-              <strong class="text-gray-900 truncate block max-w-[13rem]"
-                >{pastCard.printedName}</strong
-              >
-              <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
-                <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-36 h-auto" />
-              </a>
-            </li>
-          {/each}
-        </ul>
+        {#if optionSectionOpen}
+          <div class="mb-4 flex flex-col gap-1">
+            {#each optionList as opt (Object.keys(opt))}
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={opt.value}
+                  on:change={() => toggleOption(opt.key as SearchOptionKey)}
+                />
+                <span class="text-sm">{opt.label}</span>
+              </label>
+            {/each}
+          </div>
+        {/if}
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-bold flex-shrink-0">抽選済み</h2>
+          <button
+            class="text-blue-600 text-xl focus:outline-none"
+            on:click={() => (historySectionOpen = !historySectionOpen)}
+            aria-label="抽選済み折りたたみ"
+          >
+            {historySectionOpen ? '−' : '+'}
+          </button>
+        </div>
+        {#if historySectionOpen}
+          <ul class="space-y-4 overflow-y-auto flex-1">
+            {#each pastCards as pastCard (pastCard.id)}
+              <li>
+                <strong class="text-gray-900 truncate block max-w-[13rem]"
+                  >{pastCard.printedName}</strong
+                >
+                <a href={pastCard.scryfallUri} target="_blank" rel="noopener noreferrer">
+                  <img src={pastCard.imageSmall} alt={pastCard.name} class="mx-auto w-36 h-auto" />
+                </a>
+              </li>
+            {/each}
+          </ul>
+        {/if}
       </div>
     </div>
   {/if}
