@@ -17,6 +17,7 @@
   let saving = false;
   let errorMessage: string = '';
   let sidebarOpen = false;
+  let excludeMeldCard = true;
 
   const buildQuery = (): string => {
     let query = BASE_QUERY;
@@ -47,7 +48,7 @@
       return;
     }
 
-    if (!result.mana_cost) {
+    if (excludeMeldCard && !result.mana_cost) {
       errorMessage = '合体カードのため、再度お試しください。';
       saving = false;
       return;
@@ -171,6 +172,13 @@
   class="hidden lg:flex fixed top-20 right-0 w-64 h-[calc(100vh-5rem)] bg-white shadow-lg border-l border-gray-200 flex-col z-40"
 >
   <div class="p-4 flex flex-col h-full">
+    <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
+    <div class="mb-4">
+      <label class="flex items-center gap-2">
+        <input type="checkbox" bind:checked={excludeMeldCard} />
+        <span class="text-sm">合体カードを除外する</span>
+      </label>
+    </div>
     <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
     <ul class="space-y-4 overflow-y-auto flex-1">
       {#each pastCards as pastCard (pastCard.id)}
@@ -229,6 +237,13 @@
         </svg>
       </button>
       <div class="p-4 flex flex-col h-full ml-12">
+        <h2 class="text-lg font-bold mb-2 flex-shrink-0">オプション</h2>
+        <div class="mb-4">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" bind:checked={excludeMeldCard} />
+            <span class="text-sm">合体カードを除外する</span>
+          </label>
+        </div>
         <h2 class="text-lg font-bold mb-2 flex-shrink-0">抽選済み</h2>
         <ul class="space-y-4 overflow-y-auto flex-1">
           {#each pastCards as pastCard (pastCard.id)}
