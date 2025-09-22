@@ -34,7 +34,7 @@
   }
 
   const buildQuery = (): string => {
-    let queryParts = BASE_QUERY_PARTS;
+    const queryParts = [...BASE_QUERY_PARTS];
 
     if (isValidMana) {
       queryParts.push(`cmc=${manaValue}`);
