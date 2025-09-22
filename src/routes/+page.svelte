@@ -5,9 +5,7 @@
   import { toDisplayCard } from '@/lib/DisplayCard.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
-    .map(encodeURIComponent)
-    .join('+');
+  const BASE_QUERY_PARTS: string[] = ['type:creature', '(game:paper)', 'lang:ja'];
 
   let currentCard: DisplayCard | null = null;
   let pastCards: DisplayCard[] = [];
@@ -36,27 +34,24 @@
   }
 
   const buildQuery = (): string => {
-    let query = BASE_QUERY;
+    let queryParts = BASE_QUERY_PARTS;
 
     if (isValidMana) {
-      query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
+      queryParts.push(`cmc=${manaValue}`);
     }
 
-    const rarityConditions = [
-      searchOptions.includeCommon.value && 'rarity:c',
-      searchOptions.includeUncommon.value && 'rarity:u',
-      searchOptions.includeRare.value && 'rarity:r',
-      searchOptions.includeMythic.value && 'rarity:m'
-    ]
-      .filter(Boolean)
-      .map(encodeURIComponent);
-    if (rarityConditions.length > 0) {
-      const open = encodeURIComponent('(');
-      const close = encodeURIComponent(')');
-      query += `+${open}${rarityConditions.join('+OR+')}${close}`;
+    const rarities = [
+      searchOptions.includeCommon.value ? 'rarity:c' : '',
+      searchOptions.includeUncommon.value ? 'rarity:u' : '',
+      searchOptions.includeRare.value ? 'rarity:r' : '',
+      searchOptions.includeMythic.value ? 'rarity:m' : ''
+    ].filter(Boolean);
+
+    if (rarities.length > 0) {
+      queryParts.push(`(${rarities.join('+OR+')})`);
     }
 
-    return query;
+    return queryParts.join('+');
   };
 
   async function getCard() {
