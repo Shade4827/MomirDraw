@@ -5,9 +5,7 @@
   import { toDisplayCard } from '@/lib/DisplayCard.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja']
-    .map(encodeURIComponent)
-    .join('+');
+  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja'].join('+');
 
   let currentCard: DisplayCard | null = null;
   let pastCards: DisplayCard[] = [];
@@ -39,7 +37,7 @@
     let query = BASE_QUERY;
 
     if (isValidMana) {
-      query += `+${encodeURIComponent(`cmc=${manaValue}`)}`;
+      query += `+cmc=${manaValue}`;
     }
 
     const rarityConditions = [
@@ -47,13 +45,9 @@
       searchOptions.includeUncommon.value && 'rarity:u',
       searchOptions.includeRare.value && 'rarity:r',
       searchOptions.includeMythic.value && 'rarity:m'
-    ]
-      .filter(Boolean)
-      .map(encodeURIComponent);
+    ].filter(Boolean);
     if (rarityConditions.length > 0) {
-      const open = encodeURIComponent('(');
-      const close = encodeURIComponent(')');
-      query += `+${open}${rarityConditions.join('+OR+')}${close}`;
+      query += `+(${rarityConditions.join('+OR+')})`;
     }
 
     return query;
