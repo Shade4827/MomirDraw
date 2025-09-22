@@ -5,7 +5,7 @@
   import { toDisplayCard } from '@/lib/DisplayCard.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
 
-  const BASE_QUERY: string = ['type:creature', '(game:paper)', 'lang:ja'].join('+');
+  const BASE_QUERY_PARTS: string[] = ['type:creature', '(game:paper)', 'lang:ja'];
 
   let currentCard: DisplayCard | null = null;
   let pastCards: DisplayCard[] = [];
@@ -34,7 +34,7 @@
   }
 
   const buildQuery = (): string => {
-    let queryParts = [BASE_QUERY];
+    let queryParts = BASE_QUERY_PARTS;
 
     if (isValidMana) {
       queryParts.push(`cmc=${manaValue}`);
@@ -60,7 +60,6 @@
     errorMessage = '';
 
     const query = buildQuery();
-    console.log(query);
     let result: ScryfallCardResponse | null = null;
     try {
       result = await fetchRandomCardFromAPI(query);
