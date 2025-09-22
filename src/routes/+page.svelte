@@ -34,23 +34,24 @@
   }
 
   const buildQuery = (): string => {
-    let query = BASE_QUERY;
+    let queryParts = [BASE_QUERY];
 
     if (isValidMana) {
-      query += `+cmc=${manaValue}`;
+      queryParts.push(`cmc=${manaValue}`);
     }
 
-    const rarityConditions = [
-      searchOptions.includeCommon.value && 'rarity:c',
-      searchOptions.includeUncommon.value && 'rarity:u',
-      searchOptions.includeRare.value && 'rarity:r',
-      searchOptions.includeMythic.value && 'rarity:m'
+    const rarities = [
+      searchOptions.includeCommon.value ? 'rarity:c' : '',
+      searchOptions.includeUncommon.value ? 'rarity:u' : '',
+      searchOptions.includeRare.value ? 'rarity:r' : '',
+      searchOptions.includeMythic.value ? 'rarity:m' : ''
     ].filter(Boolean);
-    if (rarityConditions.length > 0) {
-      query += `+(${rarityConditions.join('+OR+')})`;
+
+    if (rarities.length > 0) {
+      queryParts.push(`(${rarities.join('+OR+')})`);
     }
 
-    return query;
+    return queryParts.join('+');
   };
 
   async function getCard() {
@@ -59,6 +60,7 @@
     errorMessage = '';
 
     const query = buildQuery();
+    console.log(query);
     let result: ScryfallCardResponse | null = null;
     try {
       result = await fetchRandomCardFromAPI(query);
