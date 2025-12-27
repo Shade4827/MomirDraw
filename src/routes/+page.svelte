@@ -4,6 +4,13 @@
   import type { SearchOptionKey, SearchOptions } from '@/lib/SearchOption.js';
   import { toDisplayCard } from '@/lib/DisplayCard.js';
   import { fetchRandomCardFromAPI } from '@/lib/fetchCards.js';
+  import { buildQuery } from '@/lib/queryBuilder.js';
+  import {
+    validateCardResponse,
+    validateMeldCard,
+    validateCreature,
+    validateDuplicate
+  } from '@/lib/cardValidator.js';
 
   const BASE_QUERY_PARTS: string[] = ['type:creature', '(game:paper)', 'lang:ja'];
 
@@ -27,39 +34,21 @@
     includeMythic: { value: false, label: '神話レアから検索' }
   };
 
-  $: optionList = Object.entries(searchOptions).map(([key, option]) => ({ key, ...option }));
-
   function toggleOption(key: SearchOptionKey) {
     searchOptions[key].value = !searchOptions[key].value;
   }
-
-  const buildQuery = (): string => {
-    const queryParts = [...BASE_QUERY_PARTS];
-
-    if (isValidMana) {
-      queryParts.push(`cmc=${manaValue}`);
-    }
-
-    const rarities = [
-      searchOptions.includeCommon.value ? 'rarity:c' : '',
-      searchOptions.includeUncommon.value ? 'rarity:u' : '',
-      searchOptions.includeRare.value ? 'rarity:r' : '',
-      searchOptions.includeMythic.value ? 'rarity:m' : ''
-    ].filter(Boolean);
-
-    if (rarities.length > 0) {
-      queryParts.push(`(${rarities.join('+OR+')})`);
-    }
-
-    return queryParts.join('+');
-  };
 
   async function getCard() {
     if (saving) return;
     saving = true;
     errorMessage = '';
 
-    const query = buildQuery();
+    const query = buildQuery({
+      baseQueryParts: BASE_QUERY_PARTS,
+      manaValue,
+      searchOptions
+    });
+
     let result: ScryfallCardResponse | null = null;
     try {
       result = await fetchRandomCardFromAPI(query);
@@ -69,30 +58,32 @@
       return;
     }
 
-    if (!result) {
-      errorMessage = 'カードが見つかりませんでした。再度お試しください。';
+    const cardResponseValidation = validateCardResponse(result);
+    if (!cardResponseValidation.isValid) {
+      errorMessage = cardResponseValidation.error || '';
       saving = false;
       return;
     }
 
-    if (searchOptions.excludeMeldCard.value && !result.mana_cost) {
-      errorMessage = '合体カードのため、再度お試しください。';
+    const meldValidation = validateMeldCard(result!, searchOptions);
+    if (!meldValidation.isValid) {
+      errorMessage = meldValidation.error || '';
       saving = false;
       return;
     }
 
-    const displayCard = toDisplayCard(result);
-    if (!displayCard) {
-      errorMessage = '表面がクリーチャーでないカードのため、再度お試しください。';
+    const displayCard = toDisplayCard(result!);
+
+    const creatureValidation = validateCreature(displayCard);
+    if (!creatureValidation.isValid) {
+      errorMessage = creatureValidation.error || '';
       saving = false;
       return;
     }
 
-    if (
-      pastCards.some((card) => card.id === displayCard.id) ||
-      currentCard?.id === displayCard.id
-    ) {
-      errorMessage = '同じカードが既に抽選されています。再度お試しください。';
+    const duplicateValidation = validateDuplicate(displayCard!, currentCard, pastCards);
+    if (!duplicateValidation.isValid) {
+      errorMessage = duplicateValidation.error || '';
       saving = false;
       return;
     }
@@ -211,14 +202,14 @@
     </div>
     {#if optionSectionOpen}
       <div class="mb-4 flex flex-col gap-1">
-        {#each optionList as opt (Object.keys(opt))}
+        {#each Object.entries(searchOptions) as [key, option] (key)}
           <label class="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={opt.value}
-              on:change={() => toggleOption(opt.key as SearchOptionKey)}
+              checked={option.value}
+              on:change={() => toggleOption(key as SearchOptionKey)}
             />
-            <span class="text-sm">{opt.label}</span>
+            <span class="text-sm">{option.label}</span>
           </label>
         {/each}
       </div>
@@ -306,14 +297,14 @@
         </div>
         {#if optionSectionOpen}
           <div class="mb-4 flex flex-col gap-1">
-            {#each optionList as opt (Object.keys(opt))}
+            {#each Object.entries(searchOptions) as [key, option] (key)}
               <label class="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={opt.value}
-                  on:change={() => toggleOption(opt.key as SearchOptionKey)}
+                  checked={option.value}
+                  on:change={() => toggleOption(key as SearchOptionKey)}
                 />
-                <span class="text-sm">{opt.label}</span>
+                <span class="text-sm">{option.label}</span>
               </label>
             {/each}
           </div>
