@@ -27,8 +27,6 @@
     includeMythic: { value: false, label: '神話レアから検索' }
   };
 
-  $: optionList = Object.entries(searchOptions).map(([key, option]) => ({ key, ...option }));
-
   function toggleOption(key: SearchOptionKey) {
     searchOptions[key].value = !searchOptions[key].value;
   }
@@ -211,14 +209,14 @@
     </div>
     {#if optionSectionOpen}
       <div class="mb-4 flex flex-col gap-1">
-        {#each optionList as opt (Object.keys(opt))}
+        {#each Object.entries(searchOptions) as [key, option] (key)}
           <label class="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={opt.value}
-              on:change={() => toggleOption(opt.key as SearchOptionKey)}
+              checked={option.value}
+              on:change={() => toggleOption(key as SearchOptionKey)}
             />
-            <span class="text-sm">{opt.label}</span>
+            <span class="text-sm">{option.label}</span>
           </label>
         {/each}
       </div>
@@ -306,14 +304,14 @@
         </div>
         {#if optionSectionOpen}
           <div class="mb-4 flex flex-col gap-1">
-            {#each optionList as opt (Object.keys(opt))}
+            {#each Object.entries(searchOptions) as [key, option] (key)}
               <label class="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={opt.value}
-                  on:change={() => toggleOption(opt.key as SearchOptionKey)}
+                  checked={option.value}
+                  on:change={() => toggleOption(key as SearchOptionKey)}
                 />
-                <span class="text-sm">{opt.label}</span>
+                <span class="text-sm">{option.label}</span>
               </label>
             {/each}
           </div>
